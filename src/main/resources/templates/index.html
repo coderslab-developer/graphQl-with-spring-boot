@@ -1,70 +1,32 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-<title>Home</title>
-<meta charset="ISO-8859-1" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</head>
-<body>
-	<div class="container">
-		<div class="row">
-			<button id="btn-users">Get All usres</button>
-			<a id="context-path" th:href="@{/}" style="display: none;"></a>
-			
-			<h2>All Users</h2>
-			<div class="col-md-12 result" style="border: 1px solid red; padding: 20px; margin-top: 20px;">
-				
-			</div>
+	<head>
+		<title>Home</title>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		
+		<!-- css -->
+		<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.css}"/>
+		<link rel="stylesheet" type="text/css" th:href="@{/css/map.css}"/>
+		
+		<!-- js -->
+		<script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+		<script type="text/javascript" th:src="@{/js/bootstrap.js}"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJwDIbC8J7bn318YwbeOvWUt7NQor-08E"></script>
+		<script type="text/javascript" th:src="@{/js/stats.js}"></script>
+		<script type="text/javascript" th:src="@{/js/markercluster.js}"></script>
+		<script type="text/javascript" th:src="@{/js/map.js}"></script>
+	</head>
+	<body onload="cl.ex.gq.initMap(), cl.ex.gq.queryFunction()">
+		<div class="col-md-9" id="map"></div>
+		<div class="col-md-3" style="text-align:center;">
+			<h3>Map Mouse Over Location</h3>
+			<p id="mouse-over-location">(0, 0)</p>
+			<hr/>
+			<h3>Lat Long (Mouse Click)</h3>
+			<p id="mouse-click-location">(0, 0)</p>
+			<hr/>
 		</div>
-	</div>
-	<script type="text/javascript">
-		var cl = cl || {};
-		cl.ex = cl.ex || {};
-		cl.ex.gq = cl.ex.gq || {};
-	
-		cl.ex.gq.users;
-	
-		$(document).ready(function() {
-			$('#btn-users').on('click', function() {
-				var userQuery = 'query{users{userId name mobile}}';
-	
-				var data = {
-					'url' : $('#context-path').attr('href') + 'rest/users',
-					'query' : userQuery,
-					'async' : false
-				}
-				cl.ex.gq.execureQuery(data);
-	
-				var result = "";
-				$.each(cl.ex.gq.users, function(index, user) {
-					result += user.name + "<br/>";
-				});
-
-				$('.result').html(result);
-			});
-		});
-	
-		cl.ex.gq.execureQuery = function(data) {
-			$.ajax({
-				contentType : "application/json",
-				method : "POST",
-				url : data.url,
-				data : JSON.stringify({
-					"query" : data.query
-				}),
-				async : data.async,
-				success : function(response) {
-					cl.ex.gq.users = response.data.users;
-				}
-			});
-		}
-	</script>
-</body>
+		<a id="context-path" th:href="@{/}"></a>
+	</body>
 </html>
