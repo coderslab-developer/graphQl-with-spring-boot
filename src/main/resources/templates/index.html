@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Home</title>
+<meta charset="ISO-8859-1" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<button id="btn-users">Get All usres</button>
+			<a id="context-path" th:href="@{/}" style="display: none;"></a>
+			
+			<h2>All Users</h2>
+			<div class="col-md-12 result" style="border: 1px solid red; padding: 20px; margin-top: 20px;">
+				
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		var cl = cl || {};
+		cl.ex = cl.ex || {};
+		cl.ex.gq = cl.ex.gq || {};
+	
+		cl.ex.gq.users;
+	
+		$(document).ready(function() {
+			$('#btn-users').on('click', function() {
+				var userQuery = 'query{users{userId name mobile}}';
+	
+				var data = {
+					'url' : $('#context-path').attr('href') + 'rest/users',
+					'query' : userQuery,
+					'async' : false
+				}
+				cl.ex.gq.execureQuery(data);
+	
+				var result = "";
+				$.each(cl.ex.gq.users, function(index, user) {
+					result += user.name + "<br/>";
+				});
+
+				$('.result').html(result);
+			});
+		});
+	
+		cl.ex.gq.execureQuery = function(data) {
+			$.ajax({
+				contentType : "application/json",
+				method : "POST",
+				url : data.url,
+				data : JSON.stringify({
+					"query" : data.query
+				}),
+				async : data.async,
+				success : function(response) {
+					cl.ex.gq.users = response.data.users;
+				}
+			});
+		}
+	</script>
+</body>
+</html>
